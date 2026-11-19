@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "TABLETOP GP: how to add a feature",
+      "trigger": "PreTaskExec",
+      "action": {
+        "type": "agent",
+        "prompt": "TABLETOP GP (slotcar-xr/src) feature recipes. Use these patterns so new things fit the game.\n\n3D models or scenery: put the geometry builder in its own module (like src/locator.js): build one BufferGeometry, reuse shared materials, and use InstancedMesh for many copies. Add it to the scene or to the track group in main.js. Rebuild it in prepareTrack or selectCircuit when the circuit changes, and dispose the old geometry. Haunted-only objects go under hazards.root, which is hidden outside haunted mode. Use depthTest false only for UI-like markers.\n\nButtons on the title screen: add a button in menu.js (its data-act attribute, its label in refreshMenus, and its click handler wired to actions). Add the matching function in main.js to the actions object, and reflect its state in the snapshot passed to refreshMenus. Race-screen buttons go in dock.js or next to the camera button. On touch, call stopPropagation on pointerup so tapping a button does not release the throttle. Add the new element to obstacleRects in main.js so the camera framing avoids it.\n\nKeyboard shortcuts: add them to the keydown handler in main.js. Check that they do not conflict with the existing keys (C, I, N, M, Esc, Enter, brackets, Space).\n\nHeadings and labels: headings use the pixel font from src/pixel.js (add the selector there). Small labels use the existing monospace label styles.\n\nGameplay rules: physics runs on the 1200-sample track curve in track.js and must not change for visual work. Online races are host-decided: any new gameplay effect runs only when monsters are not in puppet mode, and reaches the guest through the snapshots or events. Visual-only changes must not affect either player's race.\n\nAlways: take a backup first, use no console.* logging, no localStorage or sessionStorage, and no new runtime dependencies. Run lint, then build (npm run build in slotcar-xr), and check the browser console for errors."
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "TABLETOP GP: backup before each task",
+      "trigger": "PreTaskExec",
+      "description": "Copy slotcar-xr to backups/ (without node_modules) before every task, per the backup rule.",
+      "action": {
+        "type": "command",
+        "command": "cd /Users/ohmannomma/Documents/kiro-cli && mkdir -p backups && rsync -a --exclude node_modules slotcar-xr/ \"backups/slotcar-xr-backup-$(date +%Y%m%d-%H%M%S)-auto/\" && echo \"backup taken\"",
+        "timeout": 120
+      }
+    }
+  ]
+}

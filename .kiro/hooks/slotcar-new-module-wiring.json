@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "TABLETOP GP: wire a new module",
+      "trigger": "PostFileCreate",
+      "matcher": "slotcar-xr/src/.*\\.js$",
+      "action": {
+        "type": "agent",
+        "prompt": "A new module was created in slotcar-xr/src. Check that it is wired in: import it where it is used in main.js or the owning class, and dispose its geometries and materials when its owner is disposed or its track changes. If it draws on the track, make sure it is rebuilt in selectCircuit, not only at start-up. If it is a test hook, expose it on window.__slot only in the existing hooks object. Do not add console logging or storage access."
+      }
+    }
+  ]
+}

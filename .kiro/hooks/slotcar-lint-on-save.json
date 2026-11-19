@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "TABLETOP GP: lint src on save",
+      "trigger": "PostFileSave",
+      "description": "Run the project lint after saving any game source file. Expect 0 errors; 6 warnings is the baseline.",
+      "matcher": "slotcar-xr/src/.*\\.js$",
+      "action": {
+        "type": "command",
+        "command": "cd /Users/ohmannomma/Documents/kiro-cli/slotcar-xr && npx -y eslint@9 --no-config-lookup -c /tmp/eslint.config.mjs src/ 2>&1 | tail -2",
+        "timeout": 180
+      }
+    }
+  ]
+}

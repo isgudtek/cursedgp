@@ -1,82 +1,93 @@
-# TABLETOP GP — browser slot-car racing
+# CursedGP
 
-A miniature slot-car set on a table, in the browser. Race an AI rival or a friend online (1v1), on the Classic
-Figure-8 or 40 real F1 layouts, with an optional Haunted Mode full of monsters. Vanilla ES modules + Three.js.
-No physics engine; engine and effect sounds are synthesised with Web Audio.
+**Slot-car racing on a haunted diorama.** Race on real circuits against an AI rival or a friend online, and when night falls, the track turns into a diorama of terror.
 
-## Modules
-- `src/track.js` — closed `CatmullRomCurve3` circuits: the Classic Figure-8 plus 40 real F1 layouts
-  (`src/circuit-data.js`, from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits)).
-  Each track has a curvature and safe-speed table and a deck with two slot lanes.
-- `src/car.js` — one scalar `u` per car. Player and AI cars use the same physics: a car derails when
-  `speed > maxSafeSpeed(curvature)`, waits a 1.5 s penalty, then returns to its slot.
-- `src/cars.js` — the three garage cars (Crimson Formula, coupe, hearse) and the garage preview.
-- `src/ai.js` — rival profiles (Specter, Banshee, Reaper). Each profile sets a throttle, looking ahead along the track.
-- `src/race.js` — race state machine `READY → COUNTDOWN → RACING → FINISHED`, 3 or 5 laps, position and gap,
-  and the time-trial ghost.
-- `src/monsters.js` — Haunted Mode: kaiju, spider, phantom, gargoyle, claws.
-- `src/input.js` — keyboard, mouse and gamepad.
-- `src/hud.js` — telemetry overlay (speed, lap, best lap, race status, position).
-- `src/menu.js` — title screen, garage, circuit chooser, open challenges, camera setup bar, results.
-- `src/framing.js` — fits the whole track into the screen area the UI leaves free (turned to suit the screen shape, steep 3/4 view).
-- `src/spectator.js` — viewpoints and zoom; `src/cockpit.js` — the cockpit TVs.
-- `src/replay.js` — after the finish, the winner's final lap replays from inside its cockpit.
-- `src/lobby.js`, `src/online.js`, `src/netsync.js` — online 1v1 (below).
+**Play it:** https://isgudtek.github.io/cursedgp/
 
-## Controls
-| Action | Keyboard / mouse | Gamepad |
-|---|---|---|
-| Throttle | `Space` / `↑`; or slide one finger (or the mouse) up and down anywhere: nothing in the bottom 15 % of the screen, full at 70 % up | RT (analog), A (full) |
-| Start (title screen) | `Enter` | Start |
-| Sound on/off | `M`, or the speaker button | Y |
-| Day / night | `N` | — |
-| Circuit | `1–9`, `[` / `]` on the title screen | — |
-| Camera | `C` cycles OVERVIEW, TV, CHASE and FREE; the camera button also has the preset views and the cockpit TVs. FREE: right-drag rotate, middle or Shift-drag pan, wheel zoom; two fingers on touch | — |
-| Back to menu | `Esc`, or EXIT TO MENU in the (i) panel | — |
+# Inspiration
 
-In a race, three round buttons sit in the bottom-right corner: (i) instructions, the camera menu, and sound on/off. The trigger gauge (right edge on phones, left on desktop) shows your throttle and turns amber, then red, near the grip limit. A de-slotted car is put back on the slot after 1.5 s.
+When we were kids, slot-car sets were the big toys of the house. Before computers, before quartz watches, a car on a plastic track was the most exciting thing in the room. The sets looked enormous back then. The older you get, the tinier they look, until one day you see the whole track on a table and realise how small it really was.
 
-## Online 1v1
-1. Choose **ONLINE (2 PLAYERS)** on the title screen. **OPEN CHALLENGES** lists open rooms with the host's choices
-   (circuit, sky, laps, haunted, car) and a JOIN button; full rooms say FULL.
-2. **CREATE NEW** opens a room with your current settings. When someone joins, press **START ONLINE RACE**.
-   Both players press READY; the countdown starts when both are ready. (A local race starts straight away.)
-3. After the finish, the winner's last lap replays from its cockpit (SKIP to jump to the results). Only the host
-   can start a rematch.
+CursedGP is that memory, rebuilt in the browser and made a little darker.
 
-How it works: the host runs the race (physics, laps, monsters, results) and sends a snapshot 15 times a second.
-The guest drives its own car locally, so the throttle has no network delay, and gently corrects it toward the
-host's state. The host's car is drawn about 120 ms in the past from a snapshot buffer, so it moves smoothly
-through jitter and lost packets. Messages go through [Ably](https://ably.com) channels `tabletop-gp:lobby`,
-`tabletop-gp:room:<CODE>` (control) and `tabletop-gp:room:<CODE>:f` (snapshots and throttle).
+# What it does
 
-### Ably key
-Put a key in `.env.local` (gitignored):
-```
-VITE_ABLY_KEY=<appId.keyId:secret>
-```
-The key is embedded in the built JavaScript, so anyone can read it. Use a key restricted to **Publish + Subscribe**
-on `tabletop-gp:*` only. Without a key the game runs fine and ONLINE reports that it is off.
+It is a game of Polistil-style slot-car racing, with a lot of choices:
 
-## Run locally
-```bash
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # production build in dist/
-```
+- **Circuits:** a set of tracks, from the classic figure-eight to long winding laps.
+- **Solo time trial:** beat your own best lap.
+- **VS AI:** race against a rival with its own personality, from a careful rookie to a maniac.
+- **1v1 online:** open a challenge, wait for an opponent, and race a friend in real time.
+- **Haunted mode:** the night turns into a diorama of terror. Monsters, pitfalls and surprises wait on the track:
+  - a giant kaiju that stomps the track and swipes its head across the lanes,
+  - a spider that drops webs across the lanes,
+  - a gargoyle that spits orbs,
+  - swarms of bats that engulf a car and slow it down,
+  - skeletons that reach out from the verge,
+  - pumpkins that hop onto the lane,
+  - ghosts that swoop on a car and drag it,
+  - portals that swap your lane,
+  - thunderstorms with long rolling thunder and earthquakes,
+  - and wolf howls from the dark.
 
-## Deploy
-`npm run build` writes `dist/` with a relative base, so it works from any sub-path. Build with `.env.local` in
-place if you want online play in the deployed copy.
-- **Vercel:** root directory `slotcar-xr`, framework Vite, output `dist`.
-- **GitHub Pages:** publish `dist/`, e.g. `npx gh-pages -d dist`.
+You can change the camera (TV cameras, chase, overview or free). On a phone you can race with one thumb on the throttle and the other on the view. In haunted mode, **Shift** fends off the hazards for a moment.
 
-## Tuning
-- `src/ai.js` — `AI_PROFILES` (`top`, `brake`, `jitter`).
-- `src/car.js` — `CAR.vmax`, `PENALTY` (1.5 s).
-- `src/netsync.js` — `NET` (snapshot rate, interpolation delay, correction rate).
+# How we built it
 
-## License and attribution
-- This project is released under the [MIT License](LICENSE).
-- Circuit layouts in `src/circuit-data.js` come from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), which is MIT-licensed. Their coordinates are included as offline fallbacks.
-- Three.js (MIT) is the rendering library; Ably's device SDK carries the online traffic.
+- **JavaScript and Three.js** for the whole game: the 3D scene, the track geometry built from one curve, the physics, the AI, the menus and the mobile controls.
+- **Procedural art and sound.** The cars, the graveyards, the forest, the church, the skeletons and the pumpkins are built in code. The sound is synthesised in the browser (the thunder, the wolf howls, the lap click), so there are almost no files to download.
+- **Online play** uses a hosted real-time messaging service: a publish-and-subscribe network that moves messages between the two players in real time. The host decides every race event and sends the results to the guest, so both screens stay in sync.
+- **The Ably key is never in the page.** A small Cloudflare Worker signs short-lived access tokens, and the browser only ever receives those tokens.
+- **GitHub Actions** builds the game and publishes it to GitHub Pages on every push.
+
+# Challenges we ran into
+
+It was a steering game. The specification gave us a solid base: a track, a car, a race. Then the features kept coming. Every addition had to fit the same track geometry, the same physics and the same network model, and every new hazard had to be fair to both players online. Keeping the two screens in step was the hardest part: the host decides everything, and the guest only replays what the host sends.
+
+Other challenges were smaller but stubborn:
+
+- keeping the track readable from every camera, from the overview down to a close chase view,
+- making the hazards strong enough to matter without making the race unplayable,
+- making the layout work on a phone with one hand on the throttle,
+- and making a diorama feel creepy on a laptop at 60 frames per second.
+
+# Accomplishments that we're proud of
+
+- A racing game that is genuinely fun to play, with a physics model that rewards a steady hand.
+- A diorama that feels like a little world: the storm, the graveyard, the forest, the church and the monsters all share one dark night.
+- Online one-versus-one that works in the browser, with no install and no account.
+- The whole game runs from a static site, with no server to keep alive except a small token service.
+
+# What we learned
+
+- **Keep one source of truth.** Every race event lives on the host and is replayed on the guest. That made online play predictable, and it made the hazards easy to test.
+- **Make the effects visible.** A hazard the player never sees is not a hazard. A lot of the work was making monsters, shields and pitfalls easy to read at speed.
+- **Procedural art scales.** Building the scenery in code kept the download small and let us tune the look quickly.
+- **Never ship a secret to a browser.** Anything in a static build is public. The token service is the honest way to give a web game access to a paid API.
+- **Test the boring parts.** Lap counts, camera order, the layout on a phone and the state of the online room needed as many checks as the game itself.
+
+# How we used Kiro
+
+We built CursedGP with Kiro in the loop for most of the work, and we genuinely enjoyed it. Kiro was the pair that never got tired of the track.
+
+- **Hooks, to keep the game safe.** Four hooks live in [`.kiro/hooks`](.kiro/hooks):
+  - *Backup before each task:* a copy of the project before every change, so any idea could be rolled back.
+  - *Lint on save:* every saved game file is linted, so a typo is caught the moment it is written.
+  - *How to add a feature:* a recipe the agent reads before any task (3D models, buttons, shortcuts, network rules).
+  - *Wire a new module:* when a new file is created, the agent checks it is imported, disposed on track change and rebuilt when the circuit changes.
+- **Steering, to keep the design consistent.** Standing rules about how the game is built (one source of truth for race events, host-decided hazards, no secrets in the browser) kept every new feature in the same shape.
+- **Specs for the bigger pieces.** We wrote requirements, design and task lists for the larger systems, then let the agent work through the tasks and check them off.
+- **Live steering.** Many decisions were made in short messages while the agent was already working: a layout change, a new monster, a sound. Kiro picked them up mid-task, adjusted, and reported back.
+- **Verification as a habit.** Almost every feature came with a small browser test: a headless Chrome run that checks the real behaviour, not just that the code compiles.
+
+What we loved most: asking for a feature in plain words ("make the ghost swoop onto a car that brakes") and getting a working version, with a test, a backup and an honest report of what was not checked.
+
+# Running it locally
+
+Install the dependencies with `npm install`, then start the development server using the scripts in `package.json`.
+
+To enable online play locally, create a `.env.local` file with `VITE_ABLY_KEY=...`. Never commit it. The public build uses the token service instead, configured with `VITE_ABLY_AUTH_URL`.
+
+# Credits
+
+Built for the Kiroween hackathon. Car and scenery models are procedural. The pumpkin and skeleton ideas are ours. The Kiroween banners are the hackathon's own artwork.
