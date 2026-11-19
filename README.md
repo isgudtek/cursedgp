@@ -70,7 +70,8 @@ Other challenges were smaller but stubborn:
 
 We built CursedGP with Kiro in the loop for most of the work, and we genuinely enjoyed it. Kiro was the pair that never got tired of the track.
 
-- **Hooks, to keep the game safe.** Four hooks live in [`.kiro/hooks`](.kiro/hooks):
+- **The whole `.kiro` folder is published** in [`.kiro`](.kiro): hooks, steering, specs and a skill. The Vaulty specs and steering in it come from another project we built in the same workspace.
+- **Hooks, to keep the game safe.** Four of them, the ones for this game, live in [`.kiro/hooks`](.kiro/hooks):
   - *Backup before each task:* a copy of the project before every change, so any idea could be rolled back.
   - *Lint on save:* every saved game file is linted, so a typo is caught the moment it is written.
   - *How to add a feature:* a recipe the agent reads before any task (3D models, buttons, shortcuts, network rules).
