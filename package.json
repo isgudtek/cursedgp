@@ -1,0 +1,23 @@
+{
+  "name": "tabletop-gp",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Browser slot-car racing: AI rivals, online 1v1, haunted mode.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "dependencies": {
+    "@ably/pubsub-device": "^3.1.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}
