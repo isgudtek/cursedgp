@@ -79,10 +79,10 @@ We built CursedGP with Kiro, and we enjoyed it. The project's `.kiro` folder hol
 - **Live steering.** Many decisions came in short messages while the agent was already working on something else. Kiro picked them up mid-task, adjusted and reported back.
 - **Browser checks.** Almost every feature came with a headless-browser check that asserts real behaviour (positions, text, counters), not just that the code compiles.
 
-**The project's working setup**
+**The project's specs and agents**
 
-- **Specs.** `.kiro/specs/tabletop-gp/` holds the requirements, the design and the task list. We use it to plan and track what is left to finish the product.
-- **Custom agents.** `.kiro/agents/` holds three agents for the remaining work: `tabletop-feature` (adds a feature with a backup, lint, build and a browser check), `tabletop-qa` (checks the release, including that no key is in the build) and `tabletop-release` (publishes the test site).
+- **Specs.** `.kiro/specs/tabletop-gp/` documents the game: its requirements, its design, and what is done and what is left.
+- **Custom agents.** `.kiro/agents/` holds three agents that encode the workflow we followed: `tabletop-feature` (adds a feature with a backup, lint, build and a browser check), `tabletop-qa` (checks a release, including that no key is in the build) and `tabletop-release` (publishes the test site).
 
 What we loved most: asking for a feature in plain words ("make the ghost swoop onto a car that brakes") and getting a working version, with a test, a backup and an honest report of what was not checked.
 
